@@ -69,36 +69,22 @@ def train_collate(batch):
 
 
 ### training ##############################################################
-# def evaluate( net, test_loader ):
-#
-#     test_num  = 0
-#     test_loss = np.zeros(6,np.float32)
-#     return test_loss
-#
-#     for i, (inputs, foregrounds_truth, cuts_truth, images, masks_truth, indices) in enumerate(test_loader, 0):
-#
-#         with torch.no_grad():
-#             inputs            = Variable(inputs).cuda()
-#             foregrounds_truth = Variable(foregrounds_truth).cuda()
-#             cuts_truth        = Variable(cuts_truth).cuda()
-#
-#             net.forward( inputs )
-#             net.criterion( foregrounds_truth, cuts_truth )
-#
-#         batch_size = len(indices)
-#         test_loss += batch_size*np.array((
-#                            net.loss.cpu().data.numpy(),
-#                            net.foreground_loss.cpu().data.numpy(),
-#                            net.cut_loss.cpu().data.numpy(),
-#                            0,
-#                            0,
-#                            0,
-#                          ))
-#         test_num  += batch_size
-#
-#     assert(test_num == len(test_loader.sampler))
-#     test_loss = test_loss/test_num
-#     return test_loss
+def evaluate( net, test_loader ):
+
+    test_loss = []
+
+    for tracklets, truths, datas, labels, lengths, indices in test_loader:
+
+        with torch.no_grad():
+            tracklets = tracklets.cuda()
+            truths    = truths.cuda()
+
+            logits = net.forward( tracklets )
+            loss = F.binary_cross_entropy_with_logits(logits,truths)
+            #print(loss)
+            test_loss.append(loss)
+        test_loss[0] = np.mean(test_loss)
+    return test_loss
 
 
 
@@ -164,14 +150,16 @@ def run_train():
     num_iters   = 1000  *1000
     iter_smooth = 20
     iter_log    = 50
-    iter_valid  = 100
+    iter_valid  = 1
     iter_save   = [0, num_iters-1]\
                    + list(range(0,num_iters,200))#1*1000
 
 
     LR = None  #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()),
-                          lr=0.001/iter_accum, momentum=0.9, weight_decay=0.0001)
+                         lr=0.001/iter_accum, momentum=0.9, weight_decay=0.0001)
+    #optimizer = optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
+    #                     lr=0.001/iter_accum, weight_decay=0.0001)
 
     start_iter = 0
     start_epoch= 0.
@@ -208,10 +196,10 @@ def run_train():
                             mode='<not_used>',transform = train_augment)
 
     valid_loader  = DataLoader(
-                        train_dataset,
-                        sampler = RandomSampler(train_dataset),
+                        valid_dataset,
+                        sampler = RandomSampler(valid_dataset),
                         #sampler = SequentialSampler(train_dataset),
-                        batch_size  = batch_size,
+                        batch_size  = 1,
                         drop_last   = True,
                         num_workers = 4,
                         pin_memory  = True,
@@ -291,7 +279,7 @@ def run_train():
     j = 0
     i = 0
 
-    counter =0
+   # counter =0
     while  i<num_iters:  # loop over the dataset multiple times
         sum_train_loss = np.zeros(6,np.float32)
         sum = 0
@@ -306,9 +294,12 @@ def run_train():
             epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
             num_products = epoch*len(train_dataset)
 
-            if i % iter_valid==0:
+            if i % iter_valid==0 and i != 0:
                 net.set_mode('valid')
                 valid_loss = evaluate(net, valid_loader)
+                #print(valid_loss)
+                #print(type(valid_loss))
+
                 net.set_mode('train')
 
                 print('\r',end='',flush=True)
@@ -373,15 +364,15 @@ def run_train():
 
             print('\r%0.4f %5.1f k %6.1f %4.1f m |  %0.3f  |  %0.3f  |  %0.3f  | %s  %d,%d,%s' % (\
                          rate, i/1000, epoch, num_products/1000000,
-                         valid_loss[0], #valid_loss[1], valid_loss[2], valid_loss[3], #valid_loss[4], valid_loss[5],#valid_acc,
+                         valid_loss[0],
                          train_loss[0], #train_loss[1], train_loss[2], train_loss[3], #train_loss[4], train_loss[5],#train_acc,
                          batch_loss[0], #batch_loss[1], batch_loss[2], batch_loss[3], #batch_loss[4], batch_loss[5],#batch_acc,
                          time_to_str((timer() - start)/60) ,i,j, ''), end='',flush=True)#str(inputs.size()))
             j=j+1
 
             #<debug> ===================================================================
-            if 1:
-            #if i%200==0:
+            #if 1:
+            if i%100==0:
                 net.set_mode('test')
                 with torch.no_grad():
                     logits  = net.forward( tracklets )

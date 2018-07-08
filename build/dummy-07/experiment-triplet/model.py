@@ -27,16 +27,16 @@ class TripletNet(nn.Module):
         self.feature = nn.Sequential(
             
             Linear_Bn(3*num_points, 32),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.PReLU(), 
 
-            Linear_Bn( 32,  64),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.Linear( 32,  64),
+            nn.PReLU(), 
 
-            Linear_Bn( 64,  128),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.Linear( 64,  128),
+            nn.PReLU(), 
 
-            Linear_Bn(128,  256),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.Linear(128,  256),
+            nn.PReLU(), 
 
             Linear_Bn(256,  512),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
@@ -47,6 +47,9 @@ class TripletNet(nn.Module):
             Linear_Bn(1024, 2048),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
+            Linear_Bn(2048, 2048),
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+
             Linear_Bn(2048, 1024),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
@@ -56,14 +59,14 @@ class TripletNet(nn.Module):
             Linear_Bn(512,  256),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(256,  128),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.Linear(256,  128),
+            nn.PReLU(),
             
-            Linear_Bn(128,   64),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.Linear(128,   64),
+            nn.PReLU(), 
 
-            Linear_Bn(64,   32),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            nn.Linear(64,   32),
+            nn.PReLU(), 
 
         )
 
@@ -127,6 +130,6 @@ def run_check_net():
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    run_check_net()
+    #run_check_net()
 
     print( 'sucessful!')
