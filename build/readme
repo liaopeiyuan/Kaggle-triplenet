@@ -1,0 +1,4 @@
+example implementation of tripleNet.
+	explore.py  :  prepare train and validation data
+	train.py    : train a dummy model and do infrerence 
+
