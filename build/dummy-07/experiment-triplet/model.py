@@ -27,54 +27,53 @@ class TripletNet(nn.Module):
         self.feature = nn.Sequential(
             
             Linear_Bn(3*num_points, 32),
-            nn.PReLU(), 
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            nn.Linear( 32,  64),
-            nn.PReLU(), 
+            Linear_Bn( 32,  64),
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            nn.Linear( 64,  128),
-            nn.PReLU(), 
+            Linear_Bn( 64,  128),
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            nn.Linear(128,  256),
-            nn.PReLU(), 
+            Linear_Bn(128,  128),
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(256,  512),
+            Linear_Bn(128,  236),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(512,  1024),
+            Linear_Bn(236,  246),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(1024, 2048),
+            Linear_Bn(246, 256),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(2048, 2048),
+
+            Linear_Bn(256, 246),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(2048, 1024),
+            Linear_Bn(246, 236),
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            
+            Linear_Bn(236,  128),
+            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
+            
+            Linear_Bn(128,  128),
+            nn.PReLU(),nn.Dropout(p=0.5, inplace=True),
+            
+            Linear_Bn(128,   64),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(1024, 512),
+            Linear_Bn(64,   32),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
-            
-            Linear_Bn(512,  256),
-            nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
-            
-            nn.Linear(256,  128),
-            nn.PReLU(),
-            
-            nn.Linear(128,   64),
-            nn.PReLU(), 
-
-            nn.Linear(64,   32),
-            nn.PReLU(), 
 
         )
 
         self.logit = nn.Sequential(
-            nn.Linear(32, 1)
+            nn.Linear(32, 1),
+            nn.Sigmoid()
         )
         # self.target = nn.Sequential(
-        #     nn.Linear(64, 3)
+        #     Linear_Bn(64, 3)
         # )
 
 

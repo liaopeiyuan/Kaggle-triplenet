@@ -13,7 +13,7 @@ from dataset.others import *
 
 
 
-def run_explore():
+def run_explore(num):
 
     data_dir  = '/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification'
     detectors = pd.read_csv(data_dir + '/detectors.csv')
@@ -22,7 +22,7 @@ def run_explore():
     #     '000001025','000001026','000001027','000001028','000001029',#
     #     '000001030','000001031','000001032','000001033','000001034',
     # ]
-    events = glob.glob('//home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/train_triplet/event*-truth.csv')
+    events = glob.glob('//home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/train_triplet{}/event*-truth.csv'.format(num))
     sorted(events)
     events = [e.split('/')[-1].replace('event','').replace('-truth.csv','') for e in events]
     #events = ['000001093']
@@ -36,9 +36,9 @@ def run_explore():
         print(event)
         ax.clear()
 
-        particles = pd.read_csv(data_dir + '/train_triplet/event%s-particles.csv'%event)
-        hits   = pd.read_csv(data_dir + '/train_triplet/event%s-hits.csv'%event)
-        truth  = pd.read_csv(data_dir + '/train_triplet/event%s-truth.csv'%event)
+        particles = pd.read_csv(data_dir + '/train_triplet{}/event{}-particles.csv'.format(num,event))
+        hits   = pd.read_csv(data_dir + '/train_triplet{}/event{}-hits.csv'.format(num,event))
+        truth  = pd.read_csv(data_dir + '/train_triplet{}/event{}-truth.csv'.format(num,event))
         truth  = truth.merge(hits, on=['hit_id'], how='left')
 
         # ----------------
@@ -168,7 +168,7 @@ def run_explore():
 
 
     #pickle_file = '/root/share/project/kaggle/cern/data/samples_more.pickle'
-    save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_train.pickle', samples[:-2])
+    save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_train{}.pickle'.format(num), samples[:-2])
     #save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_valid.pickle', samples[-2:])
     zz=0
 
@@ -336,7 +336,8 @@ def run_explore_valid():
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    run_explore()
+    for i in range(3,6):
+        run_explore(i)
     run_explore_valid()
 
     print('\nsucess!')
