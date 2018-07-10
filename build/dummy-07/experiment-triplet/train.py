@@ -158,12 +158,10 @@ def run_train():
     iter_accum = 1
     batch_size = 50
 
-    num_iters = 1500
+    
     iter_smooth = 20
     iter_log = 50
     iter_valid = 1
-    iter_save = [0, num_iters - 1]\
-        + list(range(0, num_iters, 200))  # 1*1000
 
     LR = None  # LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
     # optimizer = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()),
@@ -188,6 +186,9 @@ def run_train():
 
     # dataset ----------------------------------------
     for num in range(1, 6):
+        num_iters = 500 
+        iter_save = [0, num_iters - 1]\
+        + list(range(0, num_iters, 200))  # 1*1000
         log.write('** dataset setting **\n')
 
         train_dataset = DummyDataset(
@@ -314,6 +315,9 @@ def run_train():
                     if i % iter_valid == 0 and i != 0:
                         net.set_mode('valid')
                         valid_loss = evaluate(net, valid_loader)
+                        
+                        if float(valid_loss) < 2e-3:
+                            break
                         # print(valid_loss)
                         # print(type(valid_loss))
 
@@ -524,7 +528,9 @@ def run_train():
                         """
 
                         net.set_mode('train')
-                        
+
+        
+
             except (KeyboardInterrupt, SystemExit):
                 torch.save(
                     net.state_dict(),
@@ -541,6 +547,9 @@ def run_train():
                 # <debug> =====================================================
 
             pass  # -- end of one data loader --
+            
+            if float(valid_loss) < 2e-3:
+                break
         pass  # -- end of all iterations --
 
         if 1:  # save last

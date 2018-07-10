@@ -9,7 +9,7 @@ class Linear_Bn(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(Linear_Bn, self).__init__()
         self.linear = nn.Linear(in_channels, out_channels,bias=False)
-        torch.nn.init.xavier_uniform(self.linear.weight)
+        torch.nn.init.uniform_(self.linear.weight)
         self.bn   = nn.BatchNorm1d(out_channels)
 
     def forward(self, x):
@@ -33,35 +33,35 @@ class TripletNet(nn.Module):
             Linear_Bn( 32,  64),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn( 64,  128),
+            Linear_Bn( 64,  118),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(128,  128),
+            Linear_Bn(118,  128),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(128,  236),
+            Linear_Bn(128,  150),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(236,  246),
+            Linear_Bn(150,  175),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(246, 256),
+            Linear_Bn(175, 200),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
 
-            Linear_Bn(256, 246),
+            Linear_Bn(200, 175),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
-            Linear_Bn(246, 236),
+            Linear_Bn(175, 150),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(236,  128),
+            Linear_Bn(150,  128),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(128,  128),
+            Linear_Bn(128,  118),
             nn.PReLU(),nn.Dropout(p=0.5, inplace=True),
             
-            Linear_Bn(128,   64),
+            Linear_Bn(118,   64),
             nn.PReLU(), nn.Dropout(p=0.5, inplace=True),
 
             Linear_Bn(64,   32),
