@@ -1,5 +1,5 @@
 # edit settings here
-ROOT_DIR ='/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification'
+ROOT_DIR ='/mydisk/TrackML-Data/tripletnet'
 
 
 DATA_DIR    = ROOT_DIR + '/data'

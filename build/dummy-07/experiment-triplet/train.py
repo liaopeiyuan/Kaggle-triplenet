@@ -372,7 +372,7 @@ def run_train():
 
             #<debug> ===================================================================
             #if 1:
-            if i%100==0:
+            if i%1000==0:
                 net.set_mode('test')
                 with torch.no_grad():
                     logits  = net.forward( tracklets )
@@ -570,7 +570,7 @@ def run_predict():
     #assert(test_num == len(test_loader.sampler))
     log.write('-------------\n')
     log.write('initial_checkpoint  = %s\n'%(initial_checkpoint))
-    #log.write('tag=%s\n'%tag)
+    #log.write('tag=%s\n'%tag)/mydisk/TrackML-Data/tripletnet/user_data
     log.write('\n')
 
 

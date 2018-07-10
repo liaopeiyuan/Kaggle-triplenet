@@ -15,14 +15,14 @@ from dataset.others import *
 
 def run_explore():
 
-    data_dir  = '/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification'
+    data_dir  = '/mydisk/TrackML-Data/tripletnet'
     detectors = pd.read_csv(data_dir + '/detectors.csv')
 
     # events = [
     #     '000001025','000001026','000001027','000001028','000001029',#
     #     '000001030','000001031','000001032','000001033','000001034',
     # ]
-    events = glob.glob('//home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/train_triplet/event*-truth.csv')
+    events = glob.glob(data_dir+'/train_1/event*-truth.csv')
     sorted(events)
     events = [e.split('/')[-1].replace('event','').replace('-truth.csv','') for e in events]
     #events = ['000001093']
@@ -36,9 +36,9 @@ def run_explore():
         print(event)
         ax.clear()
 
-        particles = pd.read_csv(data_dir + '/train_triplet/event%s-particles.csv'%event)
-        hits   = pd.read_csv(data_dir + '/train_triplet/event%s-hits.csv'%event)
-        truth  = pd.read_csv(data_dir + '/train_triplet/event%s-truth.csv'%event)
+        particles = pd.read_csv(data_dir + '/train_1/event%s-particles.csv'%event)
+        hits   = pd.read_csv(data_dir + '/train_1/event%s-hits.csv'%event)
+        truth  = pd.read_csv(data_dir + '/train_1/event%s-truth.csv'%event)
         truth  = truth.merge(hits, on=['hit_id'], how='left')
 
         # ----------------
@@ -168,21 +168,20 @@ def run_explore():
 
 
     #pickle_file = '/root/share/project/kaggle/cern/data/samples_more.pickle'
-    save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_train.pickle', samples[:-2])
+    save_pickle_file(data_dir+'/user_data/samples_train.pickle', samples[:-2])
     #save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_valid.pickle', samples[-2:])
     zz=0
 
 
 def run_explore_valid():
-
-    data_dir  = '/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification'
+    data_dir = '/mydisk/TrackML-Data/tripletnet'
     detectors = pd.read_csv(data_dir + '/detectors.csv')
 
     # events = [
     #     '000001025','000001026','000001027','000001028','000001029',#
     #     '000001030','000001031','000001032','000001033','000001034',
     # ]
-    events = glob.glob('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/valid_triplet/event*-truth.csv')
+    events = glob.glob(data_dir + '/train_1/event*-truth.csv')
     sorted(events)
     events = [e.split('/')[-1].replace('event','').replace('-truth.csv','') for e in events]
     #events = ['000001093']
@@ -196,9 +195,9 @@ def run_explore_valid():
         print(event)
         ax.clear()
 
-        particles = pd.read_csv(data_dir + '/valid_triplet/event%s-particles.csv'%event)
-        hits   = pd.read_csv(data_dir + '/valid_triplet/event%s-hits.csv'%event)
-        truth  = pd.read_csv(data_dir + '/valid_triplet/event%s-truth.csv'%event)
+        particles = pd.read_csv(data_dir + '/train_1/event%s-particles.csv'%event)
+        hits   = pd.read_csv(data_dir + '/train_1/event%s-hits.csv'%event)
+        truth  = pd.read_csv(data_dir + '/train_1/event%s-truth.csv'%event)
         truth  = truth.merge(hits, on=['hit_id'], how='left')
 
         # ----------------
@@ -328,7 +327,7 @@ def run_explore_valid():
 
 
     #pickle_file = '/root/share/project/kaggle/cern/data/samples_more.pickle'
-    save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_valid.pickle', samples[:-2])
+    save_pickle_file(data_dir+'/user_data/samples_valid.pickle', samples[:-2])
     #save_pickle_file('/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/samples_valid.pickle', samples[-2:])
     zz=0
 

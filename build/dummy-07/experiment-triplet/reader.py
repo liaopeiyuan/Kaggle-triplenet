@@ -19,7 +19,7 @@ class DummyDataset(Dataset):
         self.mode=mode
         self.split=split
         self.samples = load_pickle_file(
-            '/home/alexanderliao/data/Kaggle/competitions/trackml-particle-identification/%s.pickle'%split
+            '/mydisk/TrackML-Data/tripletnet/user_data/%s.pickle'%split
         )
 
 
