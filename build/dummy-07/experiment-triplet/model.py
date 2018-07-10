@@ -9,6 +9,7 @@ class Linear_Bn(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(Linear_Bn, self).__init__()
         self.linear = nn.Linear(in_channels, out_channels,bias=False)
+        torch.nn.init.xavier_uniform(self.linear.weight)
         self.bn   = nn.BatchNorm1d(out_channels)
 
     def forward(self, x):
