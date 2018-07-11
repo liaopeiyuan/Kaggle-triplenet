@@ -186,7 +186,7 @@ def run_train():
 
     # dataset ----------------------------------------
     for num in range(1, 6):
-        num_iters = 500 
+        num_iters = 200 
         iter_save = [0, num_iters - 1]\
         + list(range(0, num_iters, 200))  # 1*1000
         log.write('** dataset setting **\n')
@@ -316,7 +316,7 @@ def run_train():
                         net.set_mode('valid')
                         valid_loss = evaluate(net, valid_loader)
                         
-                        if float(valid_loss) < 2e-3:
+                        if float(valid_loss[0]) < 0.05:
                             break
                         # print(valid_loss)
                         # print(type(valid_loss))
@@ -370,7 +370,7 @@ def run_train():
                     # accumulated update
                     loss.backward()
                     if j % iter_accum == 0:
-                        #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
+                        torch.nn.utils.clip_grad_norm(net.parameters(), 1)
                         optimizer.step()
                         optimizer.zero_grad()
 
@@ -543,12 +543,12 @@ def run_train():
                     'epoch': epoch,
                 }, out_dir + '/checkpoint/%d_optimizer.pth' % (i))
                 log.write('KeyboardInterrupt\n')
-
+                break
                 # <debug> =====================================================
 
             pass  # -- end of one data loader --
             
-            if float(valid_loss) < 2e-3:
+            if float(valid_loss[0]) < 0.03:
                 break
         pass  # -- end of all iterations --
 
@@ -576,8 +576,7 @@ def run_train():
 def run_predict():
 
     out_dir = RESULTS_DIR + '/xx10'
-    initial_checkpoint = None
-    #RESULTS_DIR + '/xx10/checkpoint/00002200_model.pth'
+    initial_checkpoint = RESULTS_DIR + '/xx10/checkpoint/209_model.pth'
     #None #
 
     # start experiments here!
@@ -713,8 +712,8 @@ def run_predict():
 if __name__ == '__main__':
     print('%s: calling main function ... ' % os.path.basename(__file__))
 
-    run_train()
-    # run_predict()
+    #run_train()
+    run_predict()
 
     print('\nsucess!')
 
